@@ -4,44 +4,39 @@ package graphs
 // minimal spanning tree for the given graph.
 func Kruskal(g *Graph) *Graph {
 	tree := NewGraph()
-	cc := map[Vertex]*Set{}
+	cc := map[Vertex]int{}
+	ccid := 1
 
 	for e := g.Edges.Front(); e != nil; e = e.Next() {
 		edge := e.Value.(*Edge)
 
-		// Initialize the start vertex’s connected component.
+		// Add the start vertex to the connected
+		// component if it isn’t included yet.
 		if _, exists := cc[edge.Start]; !exists {
-			set := NewSet()
-			set.Add(edge.Start)
-			cc[edge.Start] = set
+			cc[edge.Start] = ccid
+			ccid++
 		}
 
-		// Do the same for the end vertex.
-		if _, exists := cc[edge.End]; !exists {
-			set := NewSet()
-			set.Add(edge.End)
-			cc[edge.End] = set
-		}
-
-		// If both the connected component of the start vertex
-		// and the connected component of the end vertex are equal
-		// a circle would occur. Better skip that edge.
-		if cc[edge.Start].Equals(cc[edge.End]) {
+		// If both the start and end vertex are in the
+		// same connected component a cycle would occur,
+		// so don’t add that edge to the spanning tree.
+		if cc[edge.Start] == cc[edge.End] {
 			continue
 		}
 
-		// Add each vertex to the other’s connected component.
-		cc[edge.Start].Add(edge.End)
-		cc[edge.End].Add(edge.Start)
-
-		// Update the connected components of all connected vertices.
-		for _, s := range cc {
-			if s.Contains(edge.Start) {
-				s.Merge(cc[edge.Start])
+		// If the end vertex has a valid connected component
+		// set all vertices with that ID to the ID of the
+		// start vertex, set it to the ID of the start vertex
+		// otherwise.
+		if cc[edge.End] != 0 {
+			endid := cc[edge.End]
+			for v, id := range cc {
+				if id == endid {
+					cc[v] = cc[edge.Start]
+				}
 			}
-			if s.Contains(edge.End) {
-				s.Merge(cc[edge.End])
-			}
+		} else {
+			cc[edge.End] = cc[edge.Start]
 		}
 
 		tree.AddEdge(edge.Start, edge.End, edge.Cost)
