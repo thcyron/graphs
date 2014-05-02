@@ -1,11 +1,12 @@
 package graphs
 
 import (
-	"container/list"
+
+	// A Vertex can be just anything.
 	"fmt"
+	"sort"
 )
 
-// A Vertex can be just anything.
 type Vertex interface{}
 
 // An Edge connects two vertices with a cost.
@@ -15,57 +16,73 @@ type Edge struct {
 	Cost  float64
 }
 
-// A Graph is a set of vertices and a list of edges. The list
-// of edges is sorted by their cost.
+// A Halfedge is an edge where just the end vertex is
+// stored. The start vertex is inferred from the context.
+type Halfedge struct {
+	End  Vertex
+	Cost float64
+}
+
+// A Graph is defined by its vertices and edges stored as
+// an adjacency set.
 type Graph struct {
-	Vertices *Set
-	Edges    *list.List
+	Adjacency map[Vertex]*Set
+	Vertices  *Set
+	Directed  bool
 }
 
 // NewGraph creates a new empty graph.
 func NewGraph() *Graph {
 	return &Graph{
-		Vertices: NewSet(),
-		Edges:    list.New(),
+		Adjacency: map[Vertex]*Set{},
+		Vertices:  NewSet(),
+		Directed:  false,
+	}
+}
+
+// NewDigraph creates a new empty directed graph.
+func NewDigraph() *Graph {
+	return &Graph{
+		Adjacency: map[Vertex]*Set{},
+		Vertices:  NewSet(),
+		Directed:  true,
 	}
 }
 
 // AddEdge adds an edge to the graph. The edge connects
 // vertex v1 and vertex v2 with cost c.
 func (g *Graph) AddEdge(v1, v2 Vertex, c float64) {
-	edge := &Edge{Start: v1, End: v2, Cost: c}
-
 	g.Vertices.Add(v1)
 	g.Vertices.Add(v2)
 
-	// Just append the edge to the list if there
-	// aren’t any edges yet.
-	if g.Edges.Len() == 0 {
-		g.Edges.PushBack(edge)
-		return
+	if _, exists := g.Adjacency[v1]; !exists {
+		g.Adjacency[v1] = NewSet()
 	}
 
-	// If there are already edges, insert the new
-	// edge at the right position into the array
-	// to keep it sorted by cost.
-	for e := g.Edges.Front(); e != nil; e = e.Next() {
-		ee := e.Value.(*Edge)
-		if ee.Cost >= edge.Cost {
-			g.Edges.InsertBefore(edge, e)
-			return
+	g.Adjacency[v1].Add(Halfedge{
+		End:  v2,
+		Cost: c,
+	})
+
+	if !g.Directed {
+		if _, exists := g.Adjacency[v2]; !exists {
+			g.Adjacency[v2] = NewSet()
 		}
-	}
 
-	// The edge to be added is the one with the largest
-	// cost so far, so just append it at the end.
-	g.Edges.PushBack(edge)
+		g.Adjacency[v2].Add(Halfedge{
+			End:  v1,
+			Cost: c,
+		})
+	}
 }
 
-// Dump prints all edges with their cost on stdout.
+// Dump prints all edges with their cost to stdout.
 func (g *Graph) Dump() {
-	for e := g.Edges.Front(); e != nil; e = e.Next() {
-		ee := e.Value.(*Edge)
-		fmt.Printf("(%v,%v,%f)\n", ee.Start, ee.End, ee.Cost)
+	for v, s := range g.Adjacency {
+		for vv, _ := range *s {
+			he := vv.(Halfedge)
+			fmt.Printf("(%v,%v,%f)\n", v, he.End, he.Cost)
+		}
 	}
 }
 
@@ -76,7 +93,19 @@ func (g *Graph) NVertices() int {
 
 // NEdges returns the number of edges.
 func (g *Graph) NEdges() int {
-	return g.Edges.Len()
+	n := 0
+
+	for _, v := range g.Adjacency {
+		n += v.Len()
+	}
+
+	// Don’t count a-b and b-a edges for undirected graphs
+	// as two separate edges.
+	if !g.Directed {
+		n /= 2
+	}
+
+	return n
 }
 
 // Equals returns whether the graph is equal to the given graph.
@@ -94,8 +123,8 @@ func (g *Graph) Equals(g2 *Graph) bool {
 
 	// Check if the adjacency for each vertex is equal
 	// for both graphs.
-	a1 := g.Adjacency()
-	a2 := g2.Adjacency()
+	a1 := g.Adjacency
+	a2 := g2.Adjacency
 
 	for k, v := range a1 {
 		if !v.Equals(a2[k]) {
@@ -106,20 +135,54 @@ func (g *Graph) Equals(g2 *Graph) bool {
 	return true
 }
 
-// Adjacency returns a map with the adjacent vertices
-// of each vertex.
-func (g *Graph) Adjacency() map[Vertex]*Set {
-	adjacency := map[Vertex]*Set{}
+// AdjacentVertices returns a set containing all
+// adjacent vertices for a given vertex.
+func (g *Graph) AdjacentVertices(v Vertex) *Set {
+	vertices := NewSet()
+	if _, exists := g.Adjacency[v]; exists {
+		for vv, _ := range *g.Adjacency[v] {
+			vertices.Add(vv.(Halfedge).End)
+		}
+	}
+	return vertices
+}
 
-	for v, _ := range *g.Vertices {
-		adjacency[v] = NewSet()
+// SortedEdges is an array of edges that can be sorted
+// by their cost.
+type SortedEdges []Edge
+
+func (se SortedEdges) Len() int {
+	return len(se)
+}
+
+func (se SortedEdges) Less(i, j int) bool {
+	return se[i].Cost < se[j].Cost
+}
+
+func (se SortedEdges) Swap(i, j int) {
+	se[i], se[j] = se[j], se[i]
+}
+
+// SortedEdges returns an array of edges sorted by their cost.
+func (g *Graph) SortedEdges() SortedEdges {
+	set := NewSet()
+
+	for v, s := range g.Adjacency {
+		for vv, _ := range *s {
+			he := vv.(Halfedge)
+			set.Add(Edge{
+				Start: v,
+				End:   he.End,
+				Cost:  he.Cost,
+			})
+		}
 	}
 
-	for e := g.Edges.Front(); e != nil; e = e.Next() {
-		edge := e.Value.(*Edge)
-		adjacency[edge.Start].Add(edge.End)
-		adjacency[edge.End].Add(edge.Start)
+	edges := make(SortedEdges, set.Len())
+	for v, _ := range *set {
+		edges = append(edges, v.(Edge))
 	}
 
-	return adjacency
+	sort.Sort(&edges)
+	return edges
 }

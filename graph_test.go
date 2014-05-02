@@ -61,21 +61,19 @@ func TestGraphAdjacency(t *testing.T) {
 	graph.AddEdge("c", "d", 0)
 	graph.AddEdge("d", "a", 0)
 
-	adjacency := graph.Adjacency()
-
-	if !adjacency["a"].Equals(NewSetWithElements("b", "c", "d")) {
+	if !graph.AdjacentVertices("a").Equals(NewSetWithElements("b", "c", "d")) {
 		t.Error("bad adjacency for a")
 	}
 
-	if !adjacency["b"].Equals(NewSetWithElements("a")) {
+	if !graph.AdjacentVertices("b").Equals(NewSetWithElements("a")) {
 		t.Error("bad adjacency for b")
 	}
 
-	if !adjacency["c"].Equals(NewSetWithElements("a", "d")) {
+	if !graph.AdjacentVertices("c").Equals(NewSetWithElements("a", "d")) {
 		t.Error("bad adjacency for c")
 	}
 
-	if !adjacency["d"].Equals(NewSetWithElements("a", "c")) {
+	if !graph.AdjacentVertices("d").Equals(NewSetWithElements("a", "c")) {
 		t.Error("bad adjacency for d")
 	}
 }

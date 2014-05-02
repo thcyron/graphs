@@ -7,9 +7,7 @@ func Kruskal(g *Graph) *Graph {
 	cc := map[Vertex]int{}
 	ccid := 1
 
-	for e := g.Edges.Front(); e != nil; e = e.Next() {
-		edge := e.Value.(*Edge)
-
+	for _, edge := range g.SortedEdges() {
 		// Add the start vertex to the connected
 		// component if it isn’t included yet.
 		if _, exists := cc[edge.Start]; !exists {
