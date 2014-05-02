@@ -27,4 +27,8 @@ func TestDijkstra(t *testing.T) {
 		}
 		i++
 	}
+
+	if i != len(result) {
+		t.Error("bad path")
+	}
 }
