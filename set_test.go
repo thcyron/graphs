@@ -78,7 +78,7 @@ func TestSetContains(t *testing.T) {
 		t.Error("set should contain foo")
 	}
 
-	if set.Contains("var") {
+	if set.Contains("bar") {
 		t.Error("set should not contain bar")
 	}
 }
