@@ -5,7 +5,7 @@ import (
 )
 
 func TestDijkstra(t *testing.T) {
-	graph := NewGraph()
+	graph := NewDigraph()
 
 	graph.AddEdge("a", "b", 1)
 	graph.AddEdge("a", "c", 3)

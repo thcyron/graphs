@@ -5,7 +5,7 @@ import (
 )
 
 func TestBFS(t *testing.T) {
-	graph := NewGraph()
+	graph := NewDigraph()
 
 	graph.AddEdge(1, 3, 0)
 	graph.AddEdge(1, 2, 0)
