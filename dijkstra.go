@@ -47,14 +47,15 @@ func Dijkstra(g *Graph, start, end Vertex) *list.List {
 
 	heap.Init(&pq)
 
-	for v, _ := range *g.Vertices {
+	g.Vertices.Each(func(e interface{}, stop *bool) {
+		v := e.(Vertex)
 		dn := &djikstraNode{
 			vertex:   v,
 			distance: math.Inf(1),
 		}
 		heap.Push(&pq, dn)
 		nodes[v] = dn
-	}
+	})
 
 	nodes[start].distance = 0
 	heap.Fix(&pq, nodes[start].index)
@@ -63,12 +64,12 @@ func Dijkstra(g *Graph, start, end Vertex) *list.List {
 		v := heap.Pop(&pq).(*djikstraNode)
 
 		if adj, exists := g.Adjacency[v.vertex]; exists {
-			for vv, _ := range *adj {
-				he := vv.(Halfedge)
+			adj.Each(func(e interface{}, stop *bool) {
+				he := e.(Halfedge)
 				dn := nodes[he.End]
 
 				if dn == nil {
-					continue
+					return
 				}
 
 				if math.IsInf(dn.distance, 1) {
@@ -83,7 +84,7 @@ func Dijkstra(g *Graph, start, end Vertex) *list.List {
 						heap.Fix(&pq, dn.index)
 					}
 				}
-			}
+			})
 		}
 
 		if v.vertex == end {

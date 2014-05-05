@@ -81,10 +81,10 @@ func (g *Graph) AddEdge(v1, v2 Vertex, c float64) {
 // Dump prints all edges with their cost to stdout.
 func (g *Graph) Dump() {
 	for v, s := range g.Adjacency {
-		for vv, _ := range *s {
-			he := vv.(Halfedge)
+		s.Each(func(e interface{}, stop *bool) {
+			he := e.(Halfedge)
 			fmt.Printf("(%v,%v,%f)\n", v, he.End, he.Cost)
-		}
+		})
 	}
 }
 
@@ -142,9 +142,10 @@ func (g *Graph) Equals(g2 *Graph) bool {
 func (g *Graph) AdjacentVertices(v Vertex) *Set {
 	vertices := NewSet()
 	if _, exists := g.Adjacency[v]; exists {
-		for vv, _ := range *g.Adjacency[v] {
-			vertices.Add(vv.(Halfedge).End)
-		}
+
+		g.Adjacency[v].Each(func(e interface{}, stop *bool) {
+			vertices.Add(e.(Halfedge).End)
+		})
 	}
 	return vertices
 }
@@ -170,20 +171,20 @@ func (g *Graph) SortedEdges() SortedEdges {
 	set := NewSet()
 
 	for v, s := range g.Adjacency {
-		for vv, _ := range *s {
-			he := vv.(Halfedge)
+		s.Each(func(e interface{}, stop *bool) {
+			he := e.(Halfedge)
 			set.Add(Edge{
 				Start: v,
 				End:   he.End,
 				Cost:  he.Cost,
 			})
-		}
+		})
 	}
 
 	edges := make(SortedEdges, set.Len())
-	for v, _ := range *set {
-		edges = append(edges, v.(Edge))
-	}
+	set.Each(func(e interface{}, stop *bool) {
+		edges = append(edges, e.(Edge))
+	})
 
 	sort.Sort(&edges)
 	return edges

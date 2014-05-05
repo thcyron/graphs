@@ -17,12 +17,12 @@ func TarjanStrongCC(g *Graph) *list.List {
 	// Loop through every vertex of the graph. If the vertex
 	// has not been visited yet, perform Tarjan’s strongly
 	// connected component function with that vertex.
-	for v, _ := range *g.Vertices {
-		vv := v.(Vertex)
-		if _, exists := nodes[vv]; !exists {
-			tarjanStrongCC(g, vv, ccList, stack, nodes)
+	g.Vertices.Each(func(e interface{}, stop *bool) {
+		v := e.(Vertex)
+		if _, exists := nodes[v]; !exists {
+			tarjanStrongCC(g, v, ccList, stack, nodes)
 		}
-	}
+	})
 
 	return ccList
 }
@@ -48,8 +48,8 @@ func tarjanStrongCC(
 	stack.PushBack(v)
 
 	// Loop through every adjacent vertex.
-	for vv, _ := range *g.AdjacentVertices(v) {
-		w := vv.(Vertex)
+	g.AdjacentVertices(v).Each(func(e interface{}, stop *bool) {
+		w := e.(Vertex)
 
 		if _, exists := nodes[w]; !exists {
 			// Call ourselves recursively if that adjacent
@@ -64,7 +64,7 @@ func tarjanStrongCC(
 				nodes[v].lowlink = nodes[w].lowlink
 			}
 
-			continue
+			return
 		}
 
 		// That vertex has already been visited. Check
@@ -85,7 +85,7 @@ func tarjanStrongCC(
 
 			break
 		}
-	}
+	})
 
 	// If the lowest indexed vertex the current vertex v can
 	// reach is itself it’s a root of the strongly connected

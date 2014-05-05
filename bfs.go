@@ -21,11 +21,11 @@ func BFS(g *Graph, start Vertex, walkFunc BFSWalkFunc) {
 
 		visited.Add(v)
 
-		for vv, _ := range *g.AdjacentVertices(v) {
-			v2 := vv.(Vertex)
-			if !visited.Contains(v2) {
-				queue.PushBack(v2)
+		g.AdjacentVertices(v).Each(func(e interface{}, stop *bool) {
+			v := e.(Vertex)
+			if !visited.Contains(v) {
+				queue.PushBack(v)
 			}
-		}
+		})
 	}
 }

@@ -125,3 +125,16 @@ func TestSetAny(t *testing.T) {
 		t.Error("any should return bar or foo")
 	}
 }
+
+func TestEach(t *testing.T) {
+	set := NewSetWithElements("foo", "bar", "baz")
+	count := 0
+
+	set.Each(func(element interface{}, stop *bool) {
+		count += 1
+	})
+
+	if count != 3 {
+		t.Error("count should be 3")
+	}
+}

@@ -16,15 +16,13 @@ func dfs(g *Graph, start Vertex, visited *Set, stop *bool, walkFunc DFSWalkFunc)
 		return
 	}
 
-	set := g.AdjacentVertices(start)
-
-	for v, _ := range *set {
-		vv := v.(Vertex)
-		if !visited.Contains(vv) {
-			dfs(g, vv, visited, stop, walkFunc)
+	g.AdjacentVertices(start).Each(func(e interface{}, vstop *bool) {
+		v := e.(Vertex)
+		if !visited.Contains(v) {
+			dfs(g, v, visited, stop, walkFunc)
 			if *stop {
-				return
+				*vstop = true
 			}
 		}
-	}
+	})
 }

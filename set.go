@@ -81,3 +81,15 @@ func (s *Set) Any() interface{} {
 	}
 	return nil
 }
+
+// Each executes the given function for each element
+// in the set.
+func (s *Set) Each(f func(interface{}, *bool)) {
+	stop := false
+	for v, _ := range *s {
+		f(v, &stop)
+		if stop {
+			return
+		}
+	}
+}
