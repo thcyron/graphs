@@ -63,3 +63,21 @@ func (s *Set) Merge(s2 *Set) {
 		s.Add(element)
 	}
 }
+
+// Remove removes the given element from the set and returns
+// whether the element was removed from the set.
+func (s *Set) Remove(element interface{}) bool {
+	if _, exists := (*s)[element]; exists {
+		delete(*s, element)
+		return true
+	}
+	return false
+}
+
+// Any returns any element from the set.
+func (s *Set) Any() interface{} {
+	for v, _ := range *s {
+		return v
+	}
+	return nil
+}

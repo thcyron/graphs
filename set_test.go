@@ -95,3 +95,33 @@ func TestSetMerge(t *testing.T) {
 		t.Error("merged set should have two elements")
 	}
 }
+
+func TestSetRemove(t *testing.T) {
+	set := NewSet()
+	set.Add("foo")
+	set.Add("bar")
+	set.Remove("foo")
+
+	if set.Len() != 1 {
+		t.Error("set should contain one element")
+	}
+
+	if !set.Contains("bar") {
+		t.Error("set should contain bar")
+	}
+}
+
+func TestSetAny(t *testing.T) {
+	set := NewSet()
+
+	if e := set.Any(); e != nil {
+		t.Error("any should return nil for emtpy set")
+	}
+
+	set.Add("foo")
+	set.Add("bar")
+
+	if e := set.Any(); e != "bar" && e != "foo" {
+		t.Error("any should return bar or foo")
+	}
+}
