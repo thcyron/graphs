@@ -2,9 +2,9 @@ package graphs
 
 import "container/list"
 
-type BFSPredicate func(Vertex) bool
+type BFSWalkFunc func(Vertex, *bool)
 
-func BFS(g *Graph, start Vertex, predicate BFSPredicate) Vertex {
+func BFS(g *Graph, start Vertex, walkFunc BFSWalkFunc) {
 	queue := list.New()
 	queue.PushFront(start)
 
@@ -13,8 +13,10 @@ func BFS(g *Graph, start Vertex, predicate BFSPredicate) Vertex {
 	for f := queue.Front(); f != nil; f = queue.Front() {
 		v := queue.Remove(f).(Vertex)
 
-		if predicate(v) {
-			return v
+		stop := false
+		walkFunc(v, &stop)
+		if stop {
+			return
 		}
 
 		visited.Add(v)
@@ -26,6 +28,4 @@ func BFS(g *Graph, start Vertex, predicate BFSPredicate) Vertex {
 			}
 		}
 	}
-
-	return nil
 }
