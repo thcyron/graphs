@@ -46,6 +46,11 @@ func NewDigraph() *Graph {
 	return graph
 }
 
+// AddVertex adds the given vertex to the graph.
+func (g *Graph) AddVertex(v Vertex) {
+	g.Vertices.Add(v)
+}
+
 // AddEdge adds an edge to the graph. The edge connects
 // vertex v1 and vertex v2 with cost c.
 func (g *Graph) AddEdge(v1, v2 Vertex, c float64) {
