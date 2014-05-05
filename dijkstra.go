@@ -62,24 +62,26 @@ func Dijkstra(g *Graph, start, end Vertex) *list.List {
 	for pq.Len() > 0 {
 		v := heap.Pop(&pq).(*djikstraNode)
 
-		for vv, _ := range *g.Adjacency[v.vertex] {
-			he := vv.(Halfedge)
-			dn := nodes[he.End]
+		if adj, exists := g.Adjacency[v.vertex]; exists {
+			for vv, _ := range *adj {
+				he := vv.(Halfedge)
+				dn := nodes[he.End]
 
-			if dn == nil {
-				continue
-			}
+				if dn == nil {
+					continue
+				}
 
-			if math.IsInf(dn.distance, 1) {
-				dn.distance = he.Cost
-				dn.predecessor = v
-				heap.Fix(&pq, dn.index)
-			} else {
-				newCost := dn.distance + he.Cost
-				if newCost < dn.distance {
-					dn.distance = newCost
+				if math.IsInf(dn.distance, 1) {
+					dn.distance = he.Cost
 					dn.predecessor = v
 					heap.Fix(&pq, dn.index)
+				} else {
+					newCost := dn.distance + he.Cost
+					if newCost < dn.distance {
+						dn.distance = newCost
+						dn.predecessor = v
+						heap.Fix(&pq, dn.index)
+					}
 				}
 			}
 		}
