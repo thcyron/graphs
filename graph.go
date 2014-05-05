@@ -42,11 +42,9 @@ func NewGraph() *Graph {
 
 // NewDigraph creates a new empty directed graph.
 func NewDigraph() *Graph {
-	return &Graph{
-		Adjacency: map[Vertex]*Set{},
-		Vertices:  NewSet(),
-		Directed:  true,
-	}
+	graph := NewGraph()
+	graph.Directed = true
+	return graph
 }
 
 // AddEdge adds an edge to the graph. The edge connects
