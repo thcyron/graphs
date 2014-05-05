@@ -1,12 +1,11 @@
 package graphs
 
 import (
-
-	// A Vertex can be just anything.
 	"fmt"
 	"sort"
 )
 
+// A Vertex can be just anything.
 type Vertex interface{}
 
 // An Edge connects two vertices with a cost.
