@@ -93,3 +93,16 @@ func (s *Set) Each(f func(interface{}, *bool)) {
 		}
 	}
 }
+
+// Iter returns a channel where all elements of the set
+// are sent to.
+func (s *Set) Iter() chan interface{} {
+	ch := make(chan interface{})
+	go func() {
+		for v, _ := range *s {
+			ch <- v
+		}
+		close(ch)
+	}()
+	return ch
+}

@@ -15,6 +15,22 @@ func TestGraphNVertices(t *testing.T) {
 	}
 }
 
+func TestVerticesIter(t *testing.T) {
+	graph := NewGraph()
+
+	graph.AddEdge("a", "b", 0)
+	graph.AddEdge("b", "c", 0)
+
+	vertices := 0
+	for _ = range graph.VerticesIter() {
+		vertices++
+	}
+
+	if vertices != graph.NVertices() {
+		t.Error("wrong number of vertices")
+	}
+}
+
 func TestGraphNEdges(t *testing.T) {
 	graph := NewGraph()
 

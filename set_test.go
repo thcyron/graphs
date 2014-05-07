@@ -138,3 +138,16 @@ func TestEach(t *testing.T) {
 		t.Error("count should be 3")
 	}
 }
+
+func TestIter(t *testing.T) {
+	set := NewSetWithElements("foo", "bar", "baz")
+	count := 0
+
+	for _ = range set.Iter() {
+		count += 1
+	}
+
+	if count != 3 {
+		t.Error("count should be 3")
+	}
+}

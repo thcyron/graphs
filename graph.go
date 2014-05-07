@@ -137,6 +137,19 @@ func (g *Graph) Equals(g2 *Graph) bool {
 	return true
 }
 
+// VerticesIter returns a channel where all vertices
+// are sent to.
+func (g *Graph) VerticesIter() chan Vertex {
+	ch := make(chan Vertex)
+	go func() {
+		for e := range g.Vertices.Iter() {
+			ch <- e.(Vertex)
+		}
+		close(ch)
+	}()
+	return ch
+}
+
 // AdjacentVertices returns a set containing all
 // adjacent vertices for a given vertex.
 func (g *Graph) AdjacentVertices(v Vertex) *Set {
