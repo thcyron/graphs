@@ -150,19 +150,6 @@ func (g *Graph) VerticesIter() chan Vertex {
 	return ch
 }
 
-// AdjacentVertices returns a set containing all
-// adjacent vertices for a given vertex.
-func (g *Graph) AdjacentVertices(v Vertex) *Set {
-	vertices := NewSet()
-	if _, exists := g.Adjacency[v]; exists {
-
-		g.Adjacency[v].Each(func(e interface{}, stop *bool) {
-			vertices.Add(e.(Halfedge).End)
-		})
-	}
-	return vertices
-}
-
 // SortedEdges is an array of edges that can be sorted
 // by their cost.
 type SortedEdges []Edge

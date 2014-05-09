@@ -68,28 +68,3 @@ func TestGraphEquals(t *testing.T) {
 		t.Error("two graphs with different edges should not be equal")
 	}
 }
-
-func TestGraphAdjacency(t *testing.T) {
-	graph := NewGraph()
-
-	graph.AddEdge("a", "b", 0)
-	graph.AddEdge("a", "c", 0)
-	graph.AddEdge("c", "d", 0)
-	graph.AddEdge("d", "a", 0)
-
-	if !graph.AdjacentVertices("a").Equals(NewSetWithElements("b", "c", "d")) {
-		t.Error("bad adjacency for a")
-	}
-
-	if !graph.AdjacentVertices("b").Equals(NewSetWithElements("a")) {
-		t.Error("bad adjacency for b")
-	}
-
-	if !graph.AdjacentVertices("c").Equals(NewSetWithElements("a", "d")) {
-		t.Error("bad adjacency for c")
-	}
-
-	if !graph.AdjacentVertices("d").Equals(NewSetWithElements("a", "c")) {
-		t.Error("bad adjacency for d")
-	}
-}
