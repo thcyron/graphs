@@ -47,15 +47,14 @@ func Dijkstra(g *Graph, start, end Vertex) *list.List {
 
 	heap.Init(&pq)
 
-	g.Vertices.Each(func(e interface{}, stop *bool) {
-		v := e.(Vertex)
+	for v := range g.VerticesIter() {
 		dn := &djikstraNode{
 			vertex:   v,
 			distance: math.Inf(1),
 		}
 		heap.Push(&pq, dn)
 		nodes[v] = dn
-	})
+	}
 
 	nodes[start].distance = 0
 	heap.Fix(&pq, nodes[start].index)
