@@ -217,3 +217,19 @@ func (g *Graph) EdgesIter() chan Edge {
 	}()
 	return ch
 }
+
+// HalfedgesIter returns a channel with all halfedges for
+// the given start vertex.
+func (g *Graph) HalfedgesIter(v Vertex) chan Halfedge {
+	ch := make(chan Halfedge)
+	go func() {
+		if s, exists := g.Adjacency[v]; exists {
+			for x := range s.Iter() {
+				he := x.(Halfedge)
+				ch <- he
+			}
+		}
+		close(ch)
+	}()
+	return ch
+}
