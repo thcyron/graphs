@@ -14,6 +14,7 @@ Implemented
 * [Breadth-first search](http://en.wikipedia.org/wiki/Breadth-first_search)
 * [Depth-first search](http://en.wikipedia.org/wiki/Depth-first_search)
 * [Tarjan’s strongly connected components algorithm](http://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm)
+* [Bellman-Ford algorithm](http://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm)
 
 Todo
 ----

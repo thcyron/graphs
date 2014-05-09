@@ -202,3 +202,18 @@ func (g *Graph) SortedEdges() SortedEdges {
 	sort.Sort(&edges)
 	return edges
 }
+
+// EdgesIter returns a channel with all edges of the graph.
+func (g *Graph) EdgesIter() chan Edge {
+	ch := make(chan Edge)
+	go func() {
+		for v, s := range g.Adjacency {
+			for x := range s.Iter() {
+				he := x.(Halfedge)
+				ch <- Edge{v, he.End, he.Cost}
+			}
+		}
+		close(ch)
+	}()
+	return ch
+}
