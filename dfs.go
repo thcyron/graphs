@@ -16,13 +16,12 @@ func dfs(g *Graph, start Vertex, visited *Set, stop *bool, walkFunc DFSWalkFunc)
 		return
 	}
 
-	g.AdjacentVertices(start).Each(func(e interface{}, vstop *bool) {
-		v := e.(Vertex)
-		if !visited.Contains(v) {
-			dfs(g, v, visited, stop, walkFunc)
+	for he := range g.HalfedgesIter(start) {
+		if !visited.Contains(he.End) {
+			dfs(g, he.End, visited, stop, walkFunc)
 			if *stop {
-				*vstop = true
+				break
 			}
 		}
-	})
+	}
 }
