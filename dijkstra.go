@@ -69,17 +69,10 @@ func Dijkstra(g *Graph, start, end Vertex) *list.List {
 				continue
 			}
 
-			if math.IsInf(dn.distance, 1) {
-				dn.distance = he.Cost
+			if v.distance+he.Cost < dn.distance {
+				dn.distance = v.distance + he.Cost
 				dn.predecessor = v
 				heap.Fix(&pq, dn.index)
-			} else {
-				newCost := dn.distance + he.Cost
-				if newCost < dn.distance {
-					dn.distance = newCost
-					dn.predecessor = v
-					heap.Fix(&pq, dn.index)
-				}
 			}
 		}
 
