@@ -26,7 +26,6 @@ type Halfedge struct {
 // an adjacency set.
 type Graph struct {
 	Adjacency map[Vertex]*Set
-	Vertices  *Set
 	Directed  bool
 }
 
@@ -34,7 +33,6 @@ type Graph struct {
 func NewGraph() *Graph {
 	return &Graph{
 		Adjacency: map[Vertex]*Set{},
-		Vertices:  NewSet(),
 		Directed:  false,
 	}
 }
@@ -48,14 +46,16 @@ func NewDigraph() *Graph {
 
 // AddVertex adds the given vertex to the graph.
 func (g *Graph) AddVertex(v Vertex) {
-	g.Vertices.Add(v)
+	if _, exists := g.Adjacency[v]; !exists {
+		g.Adjacency[v] = NewSet()
+	}
 }
 
 // AddEdge adds an edge to the graph. The edge connects
 // vertex v1 and vertex v2 with cost c.
 func (g *Graph) AddEdge(v1, v2 Vertex, c float64) {
-	g.Vertices.Add(v1)
-	g.Vertices.Add(v2)
+	g.AddVertex(v1)
+	g.AddVertex(v2)
 
 	if _, exists := g.Adjacency[v1]; !exists {
 		g.Adjacency[v1] = NewSet()
@@ -67,10 +67,6 @@ func (g *Graph) AddEdge(v1, v2 Vertex, c float64) {
 	})
 
 	if !g.Directed {
-		if _, exists := g.Adjacency[v2]; !exists {
-			g.Adjacency[v2] = NewSet()
-		}
-
 		g.Adjacency[v2].Add(Halfedge{
 			End:  v1,
 			Cost: c,
@@ -87,7 +83,7 @@ func (g *Graph) Dump() {
 
 // NVertices returns the number of vertices.
 func (g *Graph) NVertices() int {
-	return g.Vertices.Len()
+	return len(g.Adjacency)
 }
 
 // NEdges returns the number of edges.
@@ -110,8 +106,8 @@ func (g *Graph) NEdges() int {
 // Equals returns whether the graph is equal to the given graph.
 // Two graphs are equal of their adjacency is equal.
 func (g *Graph) Equals(g2 *Graph) bool {
-	// Two graphs with differnet vertices aren’t equal.
-	if !g.Vertices.Equals(g2.Vertices) {
+	// Two graphs with different number of vertices aren’t equal.
+	if g.NVertices() != g2.NVertices() {
 		return false
 	}
 
@@ -139,8 +135,8 @@ func (g *Graph) Equals(g2 *Graph) bool {
 func (g *Graph) VerticesIter() chan Vertex {
 	ch := make(chan Vertex)
 	go func() {
-		for e := range g.Vertices.Iter() {
-			ch <- e.(Vertex)
+		for k, _ := range g.Adjacency {
+			ch <- k.(Vertex)
 		}
 		close(ch)
 	}()
