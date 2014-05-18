@@ -57,10 +57,6 @@ func (g *Graph) AddEdge(v1, v2 Vertex, c float64) {
 	g.AddVertex(v1)
 	g.AddVertex(v2)
 
-	if _, exists := g.Adjacency[v1]; !exists {
-		g.Adjacency[v1] = NewSet()
-	}
-
 	g.Adjacency[v1].Add(Halfedge{
 		End:  v2,
 		Cost: c,
