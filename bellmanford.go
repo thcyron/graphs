@@ -25,7 +25,7 @@ func BellmanFord(g *Graph, start, end Vertex) []Vertex {
 	for i := 0; i < n-1; i++ {
 		for e := range g.EdgesIter() {
 			c := nodes[e.Start].cost + e.Cost
-			if math.IsInf(nodes[e.End].cost, 1) || c < nodes[e.End].cost {
+			if c < nodes[e.End].cost {
 				nodes[e.End].cost = c
 				nodes[e.End].predecessor = e.Start
 			}
