@@ -9,6 +9,7 @@ Implemented
 
 * Data structues
   * Graph and Digraph
+  * Flow network
   * Set
 * Spanning tree algorithms
   * [Kruskal’s algorithm](http://en.wikipedia.org/wiki/Kruskal%27s_algorithm)
@@ -22,6 +23,8 @@ Implemented
   * [Depth-first search](http://en.wikipedia.org/wiki/Depth-first_search)
 * Connected components algorithms
   * [Tarjan’s strongly connected components algorithm](http://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm)
+* Network algorithms
+  * Residual network
 
 Todo
 ----
