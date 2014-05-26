@@ -15,7 +15,7 @@ Implemented
   * [Prim’s algorithm](http://en.wikipedia.org/wiki/Prim%27s_algorithm)
 * Shortest path algorithms
   * [Dijkstra’s algorithm](http://en.wikipedia.org/wiki/Dijkstra%27s_algorithm)
-  * [Bellman-Ford algorithm](http://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm)
+  * [Bellman–Ford algorithm](http://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm)
   * [Floyd–Warshall algorithm](http://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm)
 * Search algorithms
   * [Breadth-first search](http://en.wikipedia.org/wiki/Breadth-first_search)
