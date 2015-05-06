@@ -2,8 +2,12 @@ package graphs
 
 import (
 	"container/list"
-	"fmt"
+	"errors"
 )
+
+type NoDAGError struct {
+	error
+}
 
 func initInEdges(g *Graph) map[Vertex]int {
 	inEdges := make(map[Vertex]int)
@@ -27,11 +31,12 @@ func removeEdgesFromVertex(v Vertex, g *Graph, inEdges map[Vertex]int) {
 	}
 }
 
-func TopologicalSort(g *Graph) (topologicalOrder *list.List, topologicalClasses map[Vertex]int) {
+func TopologicalSort(g *Graph) (topologicalOrder *list.List, topologicalClasses map[Vertex]int, err *NoDAGError) {
 	inEdges := initInEdges(g)
 
 	topologicalClasses = make(map[Vertex]int)
 	topologicalOrder = list.New()
+	err = nil
 	tClass := 0
 	for len(inEdges) > 0 {
 		topClass := []Vertex{}
@@ -42,9 +47,9 @@ func TopologicalSort(g *Graph) (topologicalOrder *list.List, topologicalClasses 
 			}
 		}
 		if len(topClass) == 0 {
-			fmt.Println("This graph is not a DAG. No topological order exists.")
-			topologicalOrder = nil
-			topologicalClasses = nil
+			err = &NoDAGError{errors.New("Graph is not a DAG.")}
+			topologicalClasses = make(map[Vertex]int)
+			topologicalOrder = list.New()
 			return
 		}
 		for _, v := range topClass {
