@@ -78,19 +78,19 @@ func TestTopologicalSort_Case2(t *testing.T) {
 	// check if the topological ordering is correct
 	e := topOrder.Front()
 	if e.Value.(int) != 1 {
-		t.Error("First node shuld be: 1")
+		t.Error("First node should be: 1")
 	}
 	e = e.Next()
 	if e.Value.(int) != 2 && e.Value.(int) != 3 {
-		t.Error("Second node shuld be: 2 or 3")
+		t.Error("Second node should be: 2 or 3")
 	}
 	e = e.Next()
 	if e.Value.(int) != 2 && e.Value.(int) != 3 {
-		t.Error("Third node shuld be: 2 or 3")
+		t.Error("Third node should be: 2 or 3")
 	}
 	e = e.Next()
 	if e.Value.(int) != 4 {
-		t.Error("Fourth node shuld be: 4")
+		t.Error("Fourth node should be: 4")
 	}
 }
 
