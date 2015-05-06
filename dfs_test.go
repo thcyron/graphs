@@ -22,15 +22,14 @@ func TestDFS(t *testing.T) {
 		t.Errorf("should visit 7 vertices; visited %d", walks)
 	}
 
-	walks = 0
+	visited := make(map[Vertex]bool)
 	DFS(graph, 1, func(v Vertex, stop *bool) {
-		walks++
+		visited[v] = true
 		if v == 5 {
 			*stop = true
 		}
 	})
-
-	if walks != 5 {
-		t.Errorf("should visit 5 vertices; visited %d", walks)
+	if visited6 := visited[Vertex(6)]; visited6 {
+		t.Errorf("visited vertex 6 vertices, but should not")
 	}
 }
