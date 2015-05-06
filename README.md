@@ -1,7 +1,7 @@
 Graph Algorithms in Go 
 ======================
 
-![Travis CI status](https://api.travis-ci.org/thcyron/graphs.svg)
+[![Travis CI status](https://api.travis-ci.org/thcyron/graphs.svg)](https://travis-ci.org/thcyron/graphs)
 
 This repository contains implementations of various graph algorithms written
 in Go. I’ve written them to learn about these algorithms.
