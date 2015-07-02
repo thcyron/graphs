@@ -22,15 +22,15 @@ func initInEdges(g *Graph) map[Vertex]int {
 	return inEdges
 }
 
-func removeEdgesFromVertex(v Vertex, g *Graph, inEdges map[Vertex]int) {
-	for outEdge := range g.HalfedgesIter(v) {
-		neighbor := outEdge.End
-		inEdges[neighbor]--
-	}
-}
-
 func TopologicalSort(g *Graph) (topologicalOrder *list.List, topologicalClasses map[Vertex]int, err error) {
 	inEdges := initInEdges(g)
+
+	removeEdgesFromVertex := func(v Vertex) {
+		for outEdge := range g.HalfedgesIter(v) {
+			neighbor := outEdge.End
+			inEdges[neighbor]--
+		}
+	}
 
 	topologicalClasses = make(map[Vertex]int)
 	topologicalOrder = list.New()
@@ -50,7 +50,7 @@ func TopologicalSort(g *Graph) (topologicalOrder *list.List, topologicalClasses 
 			return
 		}
 		for _, v := range topClass {
-			removeEdgesFromVertex(v, g, inEdges)
+			removeEdgesFromVertex(v)
 			delete(inEdges, v)
 			topologicalOrder.PushBack(v)
 		}
