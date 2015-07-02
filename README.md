@@ -13,6 +13,8 @@ Implemented
   * Graph and Digraph
   * Flow network
   * Set
+* Sorting algorithms
+  * [Topological sorting](http://en.wikipedia.org/wiki/Topological_sorting)
 * Spanning tree algorithms
   * [Kruskal’s algorithm](http://en.wikipedia.org/wiki/Kruskal%27s_algorithm)
   * [Prim’s algorithm](http://en.wikipedia.org/wiki/Prim%27s_algorithm)
@@ -28,7 +30,7 @@ Implemented
 * Network algorithms
   * Residual network
 
-Todo
-----
+Contributors
+------------
 
-* [Topological sorting](http://en.wikipedia.org/wiki/Topological_sorting)
+* [Julianna Gobolos-Szabo](https://github.com/gszjulcsi) (Topological sorting)
