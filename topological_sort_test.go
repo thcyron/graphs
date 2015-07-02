@@ -107,7 +107,7 @@ func TestTopologicalSort_NotDAG(t *testing.T) {
 	graph.AddEdge(1, 3, 0)
 	graph.AddEdge(2, 1, 0)
 	_, _, noDagError := TopologicalSort(graph)
-	if noDagError == nil {
+	if noDagError != ErrNoDAG {
 		t.Error("This graph is not a DAG. TopologicalSort should have returned an Error.")
 	}
 }
