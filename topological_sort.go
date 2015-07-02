@@ -34,7 +34,6 @@ func TopologicalSort(g *Graph) (topologicalOrder *list.List, topologicalClasses 
 
 	topologicalClasses = make(map[Vertex]int)
 	topologicalOrder = list.New()
-	err = nil
 	tClass := 0
 	for len(inEdges) > 0 {
 		topClass := []Vertex{}
