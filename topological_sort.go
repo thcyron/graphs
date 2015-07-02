@@ -5,9 +5,7 @@ import (
 	"errors"
 )
 
-type NoDAGError struct {
-	error
-}
+var ErrNoDAG = errors.New("graphs: graph is not a DAG")
 
 func initInEdges(g *Graph) map[Vertex]int {
 	inEdges := make(map[Vertex]int)
@@ -31,7 +29,7 @@ func removeEdgesFromVertex(v Vertex, g *Graph, inEdges map[Vertex]int) {
 	}
 }
 
-func TopologicalSort(g *Graph) (topologicalOrder *list.List, topologicalClasses map[Vertex]int, err *NoDAGError) {
+func TopologicalSort(g *Graph) (topologicalOrder *list.List, topologicalClasses map[Vertex]int, err error) {
 	inEdges := initInEdges(g)
 
 	topologicalClasses = make(map[Vertex]int)
@@ -47,7 +45,7 @@ func TopologicalSort(g *Graph) (topologicalOrder *list.List, topologicalClasses 
 			}
 		}
 		if len(topClass) == 0 {
-			err = &NoDAGError{errors.New("Graph is not a DAG.")}
+			err = ErrNoDAG
 			topologicalClasses = make(map[Vertex]int)
 			topologicalOrder = list.New()
 			return
