@@ -18,13 +18,6 @@ func TestFloydWarshall(t *testing.T) {
 	graph.AddEdge("d", "e", 5)
 
 	m := FloydWarshall(graph)
-
-	for v, mm := range m {
-		for w, c := range mm {
-			t.Logf("m[%v][%v] = %f", v, w, c)
-		}
-	}
-
 	if c := m["a"]["e"]; c != 10 {
 		t.Errorf("bad shortest cost %f for a-e", c)
 	}
