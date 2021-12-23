@@ -11,7 +11,7 @@ func TestTopologicalSort_SimpleGraph(t *testing.T) {
 	graph.AddEdge(1, 2, 0)
 	topOrder, topClasses, noDAGError := TopologicalSort(graph)
 	if noDAGError != nil {
-		t.Error("Error was thrown: %v", noDAGError)
+		t.Errorf("Error was thrown: %v", noDAGError)
 	}
 	if topOrder.Len() != 3 {
 		t.Log("Topological order should have 3 items")
@@ -57,7 +57,7 @@ func TestTopologicalSort_Case2(t *testing.T) {
 	graph.AddEdge(3, 4, 0)
 	topOrder, topClasses, noDAGError := TopologicalSort(graph)
 	if noDAGError != nil {
-		t.Error("Error was thrown: %v", noDAGError)
+		t.Errorf("Error was thrown: %v", noDAGError)
 	}
 	if topOrder.Len() != 4 {
 		t.Log("Topological order should have 4 items")
