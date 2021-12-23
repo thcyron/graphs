@@ -5,7 +5,7 @@ import (
 )
 
 func TestPrim(t *testing.T) {
-	graph := NewGraph()
+	graph := NewGraph[string]()
 
 	graph.AddEdge("a", "b", 8)
 	graph.AddEdge("a", "c", 5)
@@ -26,7 +26,7 @@ func TestPrim(t *testing.T) {
 		t.FailNow()
 	}
 
-	result := NewGraph()
+	result := NewGraph[string]()
 	result.AddEdge("g", "e", 4)
 	result.AddEdge("e", "d", 12)
 	result.AddEdge("d", "b", 2)

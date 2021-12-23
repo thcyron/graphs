@@ -1,14 +1,14 @@
 package graphs
 
-type DFSWalkFunc func(Vertex, *bool)
+type DFSWalkFunc[T Vertex] func(T, *bool)
 
-func DFS(g *Graph, start Vertex, walkFunc DFSWalkFunc) {
-	visited := NewSet()
+func DFS[T Vertex](g *Graph[T], start T, walkFunc DFSWalkFunc[T]) {
+	visited := NewSet[T]()
 	stop := false
 	dfs(g, start, visited, &stop, walkFunc)
 }
 
-func dfs(g *Graph, start Vertex, visited *Set, stop *bool, walkFunc DFSWalkFunc) {
+func dfs[T Vertex](g *Graph[T], start T, visited *Set[T], stop *bool, walkFunc DFSWalkFunc[T]) {
 	visited.Add(start)
 
 	walkFunc(start, stop)

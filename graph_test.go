@@ -3,7 +3,7 @@ package graphs
 import "testing"
 
 func TestGraphNVertices(t *testing.T) {
-	graph := NewGraph()
+	graph := NewGraph[string]()
 
 	if graph.NVertices() != 0 {
 		t.Error("empty graph should not have any vertices")
@@ -16,7 +16,7 @@ func TestGraphNVertices(t *testing.T) {
 }
 
 func TestVerticesIter(t *testing.T) {
-	graph := NewGraph()
+	graph := NewGraph[string]()
 
 	graph.AddEdge("a", "b", 0)
 	graph.AddEdge("b", "c", 0)
@@ -32,7 +32,7 @@ func TestVerticesIter(t *testing.T) {
 }
 
 func TestGraphNEdges(t *testing.T) {
-	graph := NewGraph()
+	graph := NewGraph[string]()
 
 	if graph.NEdges() != 0 {
 		t.Error("empty graph should not have any edges")
@@ -45,8 +45,8 @@ func TestGraphNEdges(t *testing.T) {
 }
 
 func TestGraphEquals(t *testing.T) {
-	g1 := NewGraph()
-	g2 := NewGraph()
+	g1 := NewGraph[string]()
+	g2 := NewGraph[string]()
 
 	if !g1.Equals(g2) {
 		t.Error("two empty graphs should be equal")

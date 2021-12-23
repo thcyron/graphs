@@ -2,9 +2,9 @@ package graphs
 
 // Kruskal implements Kruskal’s algorithm. It returns a
 // minimal spanning tree for the given graph.
-func Kruskal(g *Graph) *Graph {
-	tree := NewGraph()
-	cc := map[Vertex]int{}
+func Kruskal[T Vertex](g *Graph[T]) *Graph[T] {
+	tree := NewGraph[T]()
+	cc := map[T]int{}
 	ccid := 1
 
 	for _, edge := range g.SortedEdges() {

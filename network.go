@@ -1,41 +1,41 @@
 package graphs
 
-type Network struct {
-	Graph    *Graph
-	Source   Vertex
-	Sink     Vertex
-	Flow     map[Edge]uint
-	Capacity map[Edge]uint
+type Network[T Vertex] struct {
+	Graph    *Graph[T]
+	Source   T
+	Sink     T
+	Flow     map[Edge[T]]uint
+	Capacity map[Edge[T]]uint
 }
 
-func NewNetwork(graph *Graph, source, sink Vertex) *Network {
-	return &Network{
+func NewNetwork[T Vertex](graph *Graph[T], source, sink T) *Network[T] {
+	return &Network[T]{
 		Graph:    graph,
 		Source:   source,
 		Sink:     sink,
-		Flow:     make(map[Edge]uint),
-		Capacity: make(map[Edge]uint),
+		Flow:     make(map[Edge[T]]uint),
+		Capacity: make(map[Edge[T]]uint),
 	}
 }
 
-func (n *Network) SetCapacity(v, w Vertex, c uint) {
-	e := Edge{v, w, 0}
+func (n *Network[T]) SetCapacity(v, w T, c uint) {
+	e := Edge[T]{v, w, 0}
 	n.Capacity[e] = c
 }
 
-func (n *Network) SetFlow(v, w Vertex, f uint) {
-	e := Edge{v, w, 0}
+func (n *Network[T]) SetFlow(v, w T, f uint) {
+	e := Edge[T]{v, w, 0}
 	n.Flow[e] = f
 }
 
-func (n *Network) SetFlowAndCapacity(v, w Vertex, f, c uint) {
-	e := Edge{v, w, 0}
+func (n *Network[T]) SetFlowAndCapacity(v, w T, f, c uint) {
+	e := Edge[T]{v, w, 0}
 	n.Flow[e] = f
 	n.Capacity[e] = c
 }
 
-func (n *Network) ResidualNetwork() *Network {
-	rg := NewGraph()
+func (n *Network[T]) ResidualNetwork() *Network[T] {
+	rg := NewGraph[T]()
 
 	for v := range n.Graph.VerticesIter() {
 		rg.AddVertex(v)
@@ -48,19 +48,19 @@ func (n *Network) ResidualNetwork() *Network {
 
 		if f > 0 {
 			rg.AddEdge(e.End, e.Start, 0)
-			an.Capacity[Edge{e.End, e.Start, 0}] = f
+			an.Capacity[Edge[T]{e.End, e.Start, 0}] = f
 		}
 
 		if c := n.Capacity[e]; f < c {
 			rg.AddEdge(e.Start, e.End, 0)
-			an.Capacity[Edge{e.Start, e.End, 0}] = c - f
+			an.Capacity[Edge[T]{e.Start, e.End, 0}] = c - f
 		}
 	}
 
 	return an
 }
 
-func (n *Network) Equals(n2 *Network) bool {
+func (n *Network[T]) Equals(n2 *Network[T]) bool {
 	if !n.Graph.Equals(n2.Graph) {
 		return false
 	}

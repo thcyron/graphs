@@ -5,7 +5,7 @@ import (
 )
 
 func TestSetAdd(t *testing.T) {
-	set := NewSet()
+	set := NewSet[string]()
 	foo := "foo"
 
 	if added := set.Add(foo); !added {
@@ -18,7 +18,7 @@ func TestSetAdd(t *testing.T) {
 }
 
 func TestSetLen(t *testing.T) {
-	set := NewSet()
+	set := NewSet[string]()
 
 	if set.Len() != 0 {
 		t.Error("set length should be 0")
@@ -41,8 +41,8 @@ func TestSetLen(t *testing.T) {
 }
 
 func TestSetEquals(t *testing.T) {
-	s1 := NewSet()
-	s2 := NewSet()
+	s1 := NewSet[string]()
+	s2 := NewSet[string]()
 
 	if s1.Equals(nil) {
 		t.Error("no set is equal to a nil set")
@@ -71,7 +71,7 @@ func TestSetEquals(t *testing.T) {
 }
 
 func TestSetContains(t *testing.T) {
-	set := NewSet()
+	set := NewSet[string]()
 	set.Add("foo")
 
 	if !set.Contains("foo") {
@@ -84,10 +84,10 @@ func TestSetContains(t *testing.T) {
 }
 
 func TestSetMerge(t *testing.T) {
-	s1 := NewSet()
+	s1 := NewSet[string]()
 	s1.Add("foo")
 
-	s2 := NewSet()
+	s2 := NewSet[string]()
 	s2.Add("bar")
 
 	s2.Merge(s1)
@@ -97,7 +97,7 @@ func TestSetMerge(t *testing.T) {
 }
 
 func TestSetRemove(t *testing.T) {
-	set := NewSet()
+	set := NewSet[string]()
 	set.Add("foo")
 	set.Add("bar")
 	set.Remove("foo")
@@ -112,25 +112,17 @@ func TestSetRemove(t *testing.T) {
 }
 
 func TestSetAny(t *testing.T) {
-	set := NewSet()
-
-	if e := set.Any(); e != nil {
-		t.Error("any should return nil for emtpy set")
-	}
-
-	set.Add("foo")
-	set.Add("bar")
-
+	set := NewSetWithElements[string]("foo", "bar")
 	if e := set.Any(); e != "bar" && e != "foo" {
 		t.Error("any should return bar or foo")
 	}
 }
 
 func TestEach(t *testing.T) {
-	set := NewSetWithElements("foo", "bar", "baz")
+	set := NewSetWithElements[string]("foo", "bar", "baz")
 	count := 0
 
-	set.Each(func(element interface{}, stop *bool) {
+	set.Each(func(element string, stop *bool) {
 		count += 1
 	})
 
@@ -140,7 +132,7 @@ func TestEach(t *testing.T) {
 }
 
 func TestIter(t *testing.T) {
-	set := NewSetWithElements("foo", "bar", "baz")
+	set := NewSetWithElements[string]("foo", "bar", "baz")
 	count := 0
 
 	for _ = range set.Iter() {

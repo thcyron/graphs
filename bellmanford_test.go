@@ -5,7 +5,7 @@ import (
 )
 
 func TestBellmanFord(t *testing.T) {
-	graph := NewDigraph()
+	graph := NewDigraph[string]()
 
 	graph.AddEdge("a", "b", 1)
 	graph.AddEdge("a", "c", 3)
@@ -23,7 +23,7 @@ func TestBellmanFord(t *testing.T) {
 		t.FailNow()
 	}
 
-	result := []Vertex{"a", "c", "d", "e"}
+	result := []string{"a", "c", "d", "e"}
 	if len(path) != len(result) {
 		t.Error("bad result")
 		t.FailNow()
@@ -37,7 +37,7 @@ func TestBellmanFord(t *testing.T) {
 }
 
 func TestBellmanFordNegWeightCycle(t *testing.T) {
-	graph := NewDigraph()
+	graph := NewDigraph[string]()
 
 	graph.AddEdge("a", "b", 6)
 	graph.AddEdge("a", "c", 3)

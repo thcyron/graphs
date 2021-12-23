@@ -4,8 +4,8 @@ import (
 	"testing"
 )
 
-func resultResidualNetwork() *Network {
-	g := NewGraph()
+func resultResidualNetwork() *Network[string] {
+	g := NewGraph[string]()
 	g.AddEdge("s", "a", 0)
 	g.AddEdge("s", "b", 0)
 	g.AddEdge("a", "t", 0)
@@ -25,7 +25,7 @@ func resultResidualNetwork() *Network {
 }
 
 func TestNetworkResidualNetwork(t *testing.T) {
-	g := NewGraph()
+	g := NewGraph[string]()
 	g.AddEdge("s", "a", 0)
 	g.AddEdge("s", "b", 0)
 	g.AddEdge("a", "t", 0)

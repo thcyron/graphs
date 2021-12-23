@@ -5,7 +5,7 @@ import (
 )
 
 func TestTopologicalSort_SimpleGraph(t *testing.T) {
-	graph := NewDigraph()
+	graph := NewDigraph[int]()
 
 	graph.AddEdge(1, 3, 0)
 	graph.AddEdge(1, 2, 0)
@@ -49,7 +49,7 @@ func TestTopologicalSort_SimpleGraph(t *testing.T) {
 }
 
 func TestTopologicalSort_Case2(t *testing.T) {
-	graph := NewDigraph()
+	graph := NewDigraph[int]()
 
 	graph.AddEdge(1, 2, 0)
 	graph.AddEdge(1, 3, 0)
@@ -101,7 +101,7 @@ func TestTopologicalSort_Case2(t *testing.T) {
 }
 
 func TestTopologicalSort_NotDAG(t *testing.T) {
-	graph := NewDigraph()
+	graph := NewDigraph[int]()
 
 	graph.AddEdge(1, 2, 0)
 	graph.AddEdge(1, 3, 0)

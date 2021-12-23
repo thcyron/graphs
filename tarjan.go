@@ -9,9 +9,9 @@ type tarjanNode struct {
 
 // TarjanStrongCC returns a list of sets of vertices. Each set
 // is a strongly connected component of the graph.
-func TarjanStrongCC(g *Graph) *list.List {
+func TarjanStrongCC[T Vertex](g *Graph[T]) *list.List {
 	ccList := list.New()
-	nodes := map[Vertex]*tarjanNode{}
+	nodes := map[T]*tarjanNode{}
 	stack := list.New()
 
 	// Loop through every vertex of the graph. If the vertex
@@ -28,12 +28,12 @@ func TarjanStrongCC(g *Graph) *list.List {
 
 // tarjanStrongCC implements Tarjan’s strongly connected components
 // algorithm starting with the given vertex.
-func tarjanStrongCC(
-	g *Graph,
-	v Vertex,
+func tarjanStrongCC[T Vertex](
+	g *Graph[T],
+	v T,
 	ccList *list.List,
 	stack *list.List,
-	nodes map[Vertex]*tarjanNode,
+	nodes map[T]*tarjanNode,
 ) {
 	// When this function is called it’s certain that the given
 	// vertex has not been visited yet. Create a new struct with
@@ -70,7 +70,7 @@ func tarjanStrongCC(
 		// if it’s in the stack and thus part of the path
 		// to the adjacent vertex w.
 		for e := stack.Front(); e != nil; e = e.Next() {
-			if e.Value.(Vertex) != w {
+			if e.Value.(T) != w {
 				continue
 			}
 
@@ -92,9 +92,9 @@ func tarjanStrongCC(
 	// vertices from the stack to the set until the current
 	// vertex v was popped from the stack.
 	if nodes[v].lowlink == nodes[v].index {
-		set := NewSet()
+		set := NewSet[T]()
 		for {
-			w := stack.Remove(stack.Back()).(Vertex)
+			w := stack.Remove(stack.Back()).(T)
 			set.Add(w)
 
 			if w == v {
