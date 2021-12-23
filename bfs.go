@@ -2,16 +2,16 @@ package graphs
 
 import "container/list"
 
-type BFSWalkFunc func(Vertex, *bool)
+type BFSWalkFunc[T Vertex] func(T, *bool)
 
-func BFS(g *Graph, start Vertex, walkFunc BFSWalkFunc) {
+func BFS[T Vertex](g *Graph[T], start T, walkFunc BFSWalkFunc[T]) {
 	queue := list.New()
 	queue.PushFront(start)
 
-	visited := NewSet()
+	visited := NewSet[T]()
 
 	for f := queue.Front(); f != nil; f = queue.Front() {
-		v := queue.Remove(f).(Vertex)
+		v := queue.Remove(f).(T)
 
 		stop := false
 		walkFunc(v, &stop)

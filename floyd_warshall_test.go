@@ -5,7 +5,7 @@ import (
 )
 
 func TestFloydWarshall(t *testing.T) {
-	graph := NewDigraph()
+	graph := NewDigraph[string]()
 
 	graph.AddEdge("a", "b", 1)
 	graph.AddEdge("a", "c", 3)

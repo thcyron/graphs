@@ -5,7 +5,7 @@ import (
 )
 
 func TestDijkstra(t *testing.T) {
-	graph := NewDigraph()
+	graph := NewDigraph[string]()
 
 	graph.AddEdge("a", "b", 1)
 	graph.AddEdge("a", "c", 3)
@@ -18,7 +18,7 @@ func TestDijkstra(t *testing.T) {
 	graph.AddEdge("d", "e", 5)
 
 	path := Dijkstra(graph, "a", "e")
-	result := []Vertex{"a", "c", "d", "e"}
+	result := []string{"a", "c", "d", "e"}
 
 	i := 0
 	for e := path.Front(); e != nil; e = e.Next() {

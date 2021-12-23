@@ -3,7 +3,7 @@ package graphs
 import "testing"
 
 func TestDFS(t *testing.T) {
-	graph := NewDigraph()
+	graph := NewDigraph[int]()
 
 	graph.AddEdge(1, 2, 0)
 	graph.AddEdge(2, 3, 0)
@@ -14,7 +14,7 @@ func TestDFS(t *testing.T) {
 	graph.AddEdge(1, 7, 0)
 
 	walks := 0
-	DFS(graph, 1, func(v Vertex, stop *bool) {
+	DFS(graph, 1, func(v int, stop *bool) {
 		walks++
 	})
 
@@ -22,14 +22,14 @@ func TestDFS(t *testing.T) {
 		t.Errorf("should visit 7 vertices; visited %d", walks)
 	}
 
-	visited := make(map[Vertex]bool)
-	DFS(graph, 1, func(v Vertex, stop *bool) {
+	visited := make(map[int]bool)
+	DFS(graph, 1, func(v int, stop *bool) {
 		visited[v] = true
 		if v == 5 {
 			*stop = true
 		}
 	})
-	if visited6 := visited[Vertex(6)]; visited6 {
+	if visited6 := visited[6]; visited6 {
 		t.Errorf("visited vertex 6 vertices, but should not")
 	}
 }

@@ -5,7 +5,7 @@ import (
 )
 
 func TestBFS(t *testing.T) {
-	graph := NewDigraph()
+	graph := NewDigraph[int]()
 
 	graph.AddEdge(1, 3, 0)
 	graph.AddEdge(1, 2, 0)
@@ -14,12 +14,12 @@ func TestBFS(t *testing.T) {
 	graph.AddEdge(12, 13, 0)
 	graph.AddEdge(13, 14, 0)
 
-	var result Vertex
+	var result int
 	walks := 0
 
-	BFS(graph, 1, func(v Vertex, stop *bool) {
+	BFS(graph, 1, func(v int, stop *bool) {
 		walks++
-		if i := v.(int); i > 10 && i%2 != 0 {
+		if i := v; i > 10 && i%2 != 0 {
 			result = v
 			*stop = true
 		}

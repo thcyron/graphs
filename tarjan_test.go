@@ -3,7 +3,7 @@ package graphs
 import "testing"
 
 func TestTarjan(t *testing.T) {
-	graph := NewDigraph()
+	graph := NewDigraph[string]()
 
 	graph.AddEdge("a", "b", 0)
 	graph.AddEdge("b", "c", 0)

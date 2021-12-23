@@ -3,12 +3,12 @@ package graphs
 // FloydWarshall implements the Floyd–Warshall algorithm. It returns
 // the cost matrix for each vertex to each other vertex of the given
 // graph. It does not check for negative weight cycles.
-func FloydWarshall(g *Graph) map[Vertex]map[Vertex]float64 {
-	m := make(map[Vertex]map[Vertex]float64)
+func FloydWarshall[T Vertex](g *Graph[T]) map[T]map[T]float64 {
+	m := make(map[T]map[T]float64)
 
 	// Initialize matrix m.
 	for v := range g.VerticesIter() {
-		m[v] = make(map[Vertex]float64)
+		m[v] = make(map[T]float64)
 
 		for he := range g.HalfedgesIter(v) {
 			m[v][he.End] = he.Cost

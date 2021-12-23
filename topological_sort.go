@@ -7,8 +7,8 @@ import (
 
 var ErrNoDAG = errors.New("graphs: graph is not a DAG")
 
-func TopologicalSort(g *Graph) (topologicalOrder *list.List, topologicalClasses map[Vertex]int, err error) {
-	inEdges := make(map[Vertex]int)
+func TopologicalSort[T Vertex](g *Graph[T]) (topologicalOrder *list.List, topologicalClasses map[T]int, err error) {
+	inEdges := make(map[T]int)
 	for e := range g.EdgesIter() {
 		if _, ok := inEdges[e.Start]; !ok {
 			inEdges[e.Start] = 0
@@ -20,18 +20,18 @@ func TopologicalSort(g *Graph) (topologicalOrder *list.List, topologicalClasses 
 		}
 	}
 
-	removeEdgesFromVertex := func(v Vertex) {
+	removeEdgesFromVertex := func(v T) {
 		for outEdge := range g.HalfedgesIter(v) {
 			neighbor := outEdge.End
 			inEdges[neighbor]--
 		}
 	}
 
-	topologicalClasses = make(map[Vertex]int)
+	topologicalClasses = make(map[T]int)
 	topologicalOrder = list.New()
 	tClass := 0
 	for len(inEdges) > 0 {
-		topClass := []Vertex{}
+		topClass := []T{}
 		for v, inDegree := range inEdges {
 			if inDegree == 0 {
 				topClass = append(topClass, v)
@@ -40,7 +40,7 @@ func TopologicalSort(g *Graph) (topologicalOrder *list.List, topologicalClasses 
 		}
 		if len(topClass) == 0 {
 			err = ErrNoDAG
-			topologicalClasses = make(map[Vertex]int)
+			topologicalClasses = make(map[T]int)
 			topologicalOrder = list.New()
 			return
 		}

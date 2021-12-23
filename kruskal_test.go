@@ -5,7 +5,7 @@ import (
 )
 
 func TestKruskal(t *testing.T) {
-	graph := NewGraph()
+	graph := NewGraph[string]()
 
 	graph.AddEdge("a", "b", 1)
 	graph.AddEdge("a", "c", 3)
@@ -19,7 +19,7 @@ func TestKruskal(t *testing.T) {
 
 	tree := Kruskal(graph)
 
-	result := NewGraph()
+	result := NewGraph[string]()
 	result.AddEdge("a", "b", 1)
 	result.AddEdge("c", "d", 2)
 	result.AddEdge("a", "c", 3)

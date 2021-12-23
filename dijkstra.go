@@ -6,49 +6,49 @@ import (
 	"math"
 )
 
-type dijkstraNode struct {
-	vertex      Vertex
+type dijkstraNode[T Vertex] struct {
+	vertex      T
 	distance    float64
-	predecessor *dijkstraNode
+	predecessor *dijkstraNode[T]
 	index       int // Index of the node in the heap
 }
 
-type dijkstraPQ []*dijkstraNode
+type dijkstraPQ[T Vertex] []*dijkstraNode[T]
 
-func (dpq dijkstraPQ) Len() int {
+func (dpq dijkstraPQ[T]) Len() int {
 	return len(dpq)
 }
 
-func (dpq dijkstraPQ) Less(i, j int) bool {
+func (dpq dijkstraPQ[T]) Less(i, j int) bool {
 	return dpq[i].distance < dpq[j].distance
 }
 
-func (dpq dijkstraPQ) Swap(i, j int) {
+func (dpq dijkstraPQ[T]) Swap(i, j int) {
 	dpq[i], dpq[j] = dpq[j], dpq[i]
 	dpq[i].index, dpq[j].index = i, j
 }
 
-func (dpq *dijkstraPQ) Push(x interface{}) {
-	dn := x.(*dijkstraNode)
+func (dpq *dijkstraPQ[T]) Push(x interface{}) {
+	dn := x.(*dijkstraNode[T])
 	dn.index = len(*dpq)
 	*dpq = append(*dpq, dn)
 }
 
-func (dpq *dijkstraPQ) Pop() interface{} {
+func (dpq *dijkstraPQ[T]) Pop() interface{} {
 	n := len(*dpq)
 	node := (*dpq)[n-1]
 	*dpq = (*dpq)[0 : n-1]
 	return node
 }
 
-func Dijkstra(g *Graph, start, end Vertex) *list.List {
-	pq := dijkstraPQ{}
-	nodes := map[Vertex]*dijkstraNode{}
+func Dijkstra[T Vertex](g *Graph[T], start, end T) *list.List {
+	pq := dijkstraPQ[T]{}
+	nodes := map[T]*dijkstraNode[T]{}
 
 	heap.Init(&pq)
 
 	for v := range g.VerticesIter() {
-		dn := &dijkstraNode{
+		dn := &dijkstraNode[T]{
 			vertex:   v,
 			distance: math.Inf(1),
 		}
@@ -60,7 +60,7 @@ func Dijkstra(g *Graph, start, end Vertex) *list.List {
 	heap.Fix(&pq, nodes[start].index)
 
 	for pq.Len() > 0 {
-		v := heap.Pop(&pq).(*dijkstraNode)
+		v := heap.Pop(&pq).(*dijkstraNode[T])
 
 		for he := range g.HalfedgesIter(v.vertex) {
 			dn := nodes[he.End]

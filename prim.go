@@ -5,36 +5,36 @@ import (
 	"math"
 )
 
-type primNode struct {
-	vertex      Vertex
+type primNode[T Vertex] struct {
+	vertex      T
 	cost        float64
 	index       int // Index of the node in the heap
 	visited     bool
-	predecessor *primNode
+	predecessor *primNode[T]
 }
 
-type primPQ []*primNode
+type primPQ[T Vertex] []*primNode[T]
 
-func (pq primPQ) Len() int {
+func (pq primPQ[T]) Len() int {
 	return len(pq)
 }
 
-func (pq primPQ) Less(i, j int) bool {
+func (pq primPQ[T]) Less(i, j int) bool {
 	return pq[i].cost < pq[j].cost
 }
 
-func (pq primPQ) Swap(i, j int) {
+func (pq primPQ[T]) Swap(i, j int) {
 	pq[i], pq[j] = pq[j], pq[i]
 	pq[i].index, pq[j].index = i, j
 }
 
-func (pq *primPQ) Push(x interface{}) {
-	n := x.(*primNode)
+func (pq *primPQ[T]) Push(x interface{}) {
+	n := x.(*primNode[T])
 	n.index = len(*pq)
 	*pq = append(*pq, n)
 }
 
-func (pq *primPQ) Pop() interface{} {
+func (pq *primPQ[T]) Pop() interface{} {
 	n := len(*pq)
 	node := (*pq)[n-1]
 	*pq = (*pq)[0 : n-1]
@@ -43,15 +43,15 @@ func (pq *primPQ) Pop() interface{} {
 
 // Prim implements Prim’s algorithm. It returns a minimal spanning
 // tree for the given graph, starting with vertex start.
-func Prim(g *Graph, start Vertex) *Graph {
-	tree := NewGraph()
-	nodes := map[Vertex]*primNode{}
-	pq := primPQ{}
+func Prim[T Vertex](g *Graph[T], start T) *Graph[T] {
+	tree := NewGraph[T]()
+	nodes := map[T]*primNode[T]{}
+	pq := primPQ[T]{}
 
 	heap.Init(&pq)
 
 	for v := range g.VerticesIter() {
-		n := &primNode{
+		n := &primNode[T]{
 			vertex:  v,
 			cost:    math.Inf(1),
 			visited: false,
@@ -64,7 +64,7 @@ func Prim(g *Graph, start Vertex) *Graph {
 	heap.Fix(&pq, nodes[start].index)
 
 	for pq.Len() > 0 {
-		v := heap.Pop(&pq).(*primNode)
+		v := heap.Pop(&pq).(*primNode[T])
 		v.visited = true
 
 		for he := range g.HalfedgesIter(v.vertex) {
