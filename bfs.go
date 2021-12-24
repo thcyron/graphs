@@ -21,10 +21,10 @@ func BFS[T Vertex](g *Graph[T], start T, walkFunc BFSWalkFunc[T]) {
 
 		visited.Add(v)
 
-		for he := range g.HalfedgesIter(v) {
+		g.EachHalfedge(v, func(he Halfedge[T], _ func()) {
 			if !visited.Contains(he.End) {
 				queue.PushBack(he.End)
 			}
-		}
+		})
 	}
 }

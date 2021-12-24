@@ -16,12 +16,12 @@ func dfs[T Vertex](g *Graph[T], start T, visited *Set[T], stop *bool, walkFunc D
 		return
 	}
 
-	for he := range g.HalfedgesIter(start) {
+	g.EachHalfedge(start, func(he Halfedge[T], innerStop func()) {
 		if !visited.Contains(he.End) {
 			dfs(g, he.End, visited, stop, walkFunc)
 			if *stop {
-				break
+				innerStop()
 			}
 		}
-	}
+	})
 }

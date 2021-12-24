@@ -9,7 +9,7 @@ var ErrNoDAG = errors.New("graphs: graph is not a DAG")
 
 func TopologicalSort[T Vertex](g *Graph[T]) (topologicalOrder *list.List, topologicalClasses map[T]int, err error) {
 	inEdges := make(map[T]int)
-	for e := range g.EdgesIter() {
+	g.EachEdge(func(e Edge[T], _ func()) {
 		if _, ok := inEdges[e.Start]; !ok {
 			inEdges[e.Start] = 0
 		}
@@ -18,13 +18,13 @@ func TopologicalSort[T Vertex](g *Graph[T]) (topologicalOrder *list.List, topolo
 		} else {
 			inEdges[e.End] = 1
 		}
-	}
+	})
 
 	removeEdgesFromVertex := func(v T) {
-		for outEdge := range g.HalfedgesIter(v) {
+		g.EachHalfedge(v, func(outEdge Halfedge[T], _ func()) {
 			neighbor := outEdge.End
 			inEdges[neighbor]--
-		}
+		})
 	}
 
 	topologicalClasses = make(map[T]int)

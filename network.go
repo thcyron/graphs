@@ -37,13 +37,13 @@ func (n *Network[T]) SetFlowAndCapacity(v, w T, f, c uint) {
 func (n *Network[T]) ResidualNetwork() *Network[T] {
 	rg := NewGraph[T]()
 
-	for v := range n.Graph.VerticesIter() {
+	n.Graph.EachVertex(func(v T, _ func()) {
 		rg.AddVertex(v)
-	}
+	})
 
 	an := NewNetwork(rg, n.Source, n.Sink)
 
-	for e := range n.Graph.EdgesIter() {
+	n.Graph.EachEdge(func(e Edge[T], _ func()) {
 		f := n.Flow[e]
 
 		if f > 0 {
@@ -55,7 +55,7 @@ func (n *Network[T]) ResidualNetwork() *Network[T] {
 			rg.AddEdge(e.Start, e.End, 0)
 			an.Capacity[Edge[T]{e.Start, e.End, 0}] = c - f
 		}
-	}
+	})
 
 	return an
 }

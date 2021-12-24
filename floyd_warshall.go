@@ -7,25 +7,25 @@ func FloydWarshall[T Vertex](g *Graph[T]) map[T]map[T]float64 {
 	m := make(map[T]map[T]float64)
 
 	// Initialize matrix m.
-	for v := range g.VerticesIter() {
+	g.EachVertex(func(v T, _ func()) {
 		m[v] = make(map[T]float64)
 
-		for he := range g.HalfedgesIter(v) {
+		g.EachHalfedge(v, func(he Halfedge[T], _ func()) {
 			m[v][he.End] = he.Cost
-		}
-	}
+		})
+	})
 
 	// For each vertex v check if using it as an intermediate
 	// vertex in the path from u -> w (u -> v -> w) results in
 	// a shorter path.
-	for v := range g.VerticesIter() {
-		for u := range g.VerticesIter() {
-			for w := range g.VerticesIter() {
+	g.EachVertex(func(v T, _ func()) {
+		g.EachVertex(func(u T, _ func()) {
+			g.EachVertex(func(w T, _ func()) {
 				if _, exists := m[u][v]; !exists {
-					continue
+					return
 				}
 				if _, exists := m[v][w]; !exists {
-					continue
+					return
 				}
 
 				newCost := m[u][v] + m[v][w]
@@ -37,9 +37,9 @@ func FloydWarshall[T Vertex](g *Graph[T]) map[T]map[T]float64 {
 				} else {
 					m[u][w] = newCost
 				}
-			}
-		}
-	}
+			})
+		})
+	})
 
 	return m
 }

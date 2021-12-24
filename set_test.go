@@ -122,7 +122,7 @@ func TestEach(t *testing.T) {
 	set := NewSetWithElements[string]("foo", "bar", "baz")
 	count := 0
 
-	set.Each(func(element string, stop *bool) {
+	set.Each(func(element string, stop func()) {
 		count += 1
 	})
 
@@ -131,15 +131,18 @@ func TestEach(t *testing.T) {
 	}
 }
 
-func TestIter(t *testing.T) {
+func TestEachStop(t *testing.T) {
 	set := NewSetWithElements[string]("foo", "bar", "baz")
 	count := 0
 
-	for _ = range set.Iter() {
+	set.Each(func(element string, stop func()) {
 		count += 1
-	}
+		if count == 2 {
+			stop()
+		}
+	})
 
-	if count != 3 {
-		t.Error("count should be 3")
+	if count != 2 {
+		t.Error("count should be 2")
 	}
 }

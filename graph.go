@@ -74,9 +74,9 @@ func (g *Graph[T]) AddEdge(v1, v2 T, c float64) {
 
 // Dump prints all edges with their cost to stdout.
 func (g *Graph[T]) Dump() {
-	for e := range g.EdgesIter() {
+	g.EachEdge(func(e Edge[T], _ func()) {
 		fmt.Printf("(%v,%v,%f)\n", e.Start, e.End, e.Cost)
-	}
+	})
 }
 
 // NVertices returns the number of vertices.
@@ -128,17 +128,16 @@ func (g *Graph[T]) Equals(g2 *Graph[T]) bool {
 	return true
 }
 
-// VerticesIter returns a channel where all vertices
-// are sent to.
-func (g *Graph[T]) VerticesIter() chan T {
-	ch := make(chan T)
-	go func() {
-		for k, _ := range g.Adjacency {
-			ch <- k
+// EachVertex calls f for every vertex.
+func (g *Graph[T]) EachVertex(f func(T, func())) {
+	var stopped bool
+	stop := func() { stopped = true }
+	for k, _ := range g.Adjacency {
+		f(k, stop)
+		if stopped {
+			break
 		}
-		close(ch)
-	}()
-	return ch
+	}
 }
 
 // SortedEdges is an array of edges that can be sorted
@@ -162,49 +161,53 @@ func (g *Graph[T]) SortedEdges() SortedEdges[T] {
 	set := NewSet[Edge[T]]()
 
 	for v := range g.Adjacency {
-		for he := range g.HalfedgesIter(v) {
+		g.EachHalfedge(v, func(he Halfedge[T], _ func()) {
 			set.Add(Edge[T]{
 				Start: v,
 				End:   he.End,
 				Cost:  he.Cost,
 			})
-		}
+		})
 	}
 
 	edges := make(SortedEdges[T], set.Len())
-	for e := range set.Iter() {
+	set.Each(func(e Edge[T], _ func()) {
 		edges = append(edges, e)
-	}
+	})
 
 	sort.Sort(&edges)
 	return edges
 }
 
-// EdgesIter returns a channel with all edges of the graph.
-func (g *Graph[T]) EdgesIter() chan Edge[T] {
-	ch := make(chan Edge[T])
-	go func() {
-		for v, s := range g.Adjacency {
-			for he := range s.Iter() {
-				ch <- Edge[T]{v, he.End, he.Cost}
+// EachEdge calls f for every edge.
+func (g *Graph[T]) EachEdge(f func(Edge[T], func())) {
+	var stopped bool
+	stop := func() { stopped = true }
+	for v, s := range g.Adjacency {
+		s.Each(func(he Halfedge[T], innerStop func()) {
+			edge := Edge[T]{v, he.End, he.Cost}
+			f(edge, stop)
+			if stopped {
+				innerStop()
 			}
+		})
+		if stopped {
+			break
 		}
-		close(ch)
-	}()
-	return ch
+	}
 }
 
-// HalfedgesIter returns a channel with all halfedges for
+// EachHalfedge calls f for every halfedge for
 // the given start vertex.
-func (g *Graph[T]) HalfedgesIter(v T) chan Halfedge[T] {
-	ch := make(chan Halfedge[T])
-	go func() {
-		if s, exists := g.Adjacency[v]; exists {
-			for he := range s.Iter() {
-				ch <- he
+func (g *Graph[T]) EachHalfedge(v T, f func(Halfedge[T], func())) {
+	if s, exists := g.Adjacency[v]; exists {
+		var stopped bool
+		stop := func() { stopped = true }
+		s.Each(func(he Halfedge[T], innerStop func()) {
+			f(he, stop)
+			if stopped {
+				innerStop()
 			}
-		}
-		close(ch)
-	}()
-	return ch
+		})
+	}
 }
