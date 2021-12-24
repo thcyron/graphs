@@ -13,31 +13,36 @@ type bellmanFordNode[T Vertex] struct {
 func BellmanFord[T Vertex](g *Graph[T], start, end T) []T {
 	nodes := map[T]*bellmanFordNode[T]{}
 
-	for v := range g.VerticesIter() {
+	g.EachVertex(func(v T, _ func()) {
 		nodes[v] = &bellmanFordNode[T]{
 			cost:        math.Inf(1),
 			predecessor: nil,
 		}
-	}
+	})
 	nodes[start].cost = 0
 
 	n := g.NVertices()
 	for i := 0; i < n-1; i++ {
-		for e := range g.EdgesIter() {
+		g.EachEdge(func(e Edge[T], _ func()) {
 			c := nodes[e.Start].cost + e.Cost
 			if c < nodes[e.End].cost {
 				nodes[e.End].cost = c
 				start := e.Start
 				nodes[e.End].predecessor = &start
 			}
-		}
+		})
 	}
 
 	// Check for negative-weight cycles.
-	for e := range g.EdgesIter() {
+	hasNegativeWeightCycle := false
+	g.EachEdge(func(e Edge[T], stop func()) {
 		if nodes[e.Start].cost+e.Cost < nodes[e.End].cost {
-			return nil
+			hasNegativeWeightCycle = true
+			stop()
 		}
+	})
+	if hasNegativeWeightCycle {
+		return nil
 	}
 
 	i := 0

@@ -15,19 +15,69 @@ func TestGraphNVertices(t *testing.T) {
 	}
 }
 
-func TestVerticesIter(t *testing.T) {
+func TestEachVertex(t *testing.T) {
 	graph := NewGraph[string]()
 
 	graph.AddEdge("a", "b", 0)
 	graph.AddEdge("b", "c", 0)
 
 	vertices := 0
-	for _ = range graph.VerticesIter() {
+	graph.EachVertex(func(_ string, _ func()) {
 		vertices++
-	}
+	})
 
 	if vertices != graph.NVertices() {
 		t.Error("wrong number of vertices")
+	}
+}
+
+func TestEachVertexStop(t *testing.T) {
+	graph := NewGraph[string]()
+
+	graph.AddEdge("a", "b", 0)
+	graph.AddEdge("b", "c", 0)
+
+	vertices := 0
+	graph.EachVertex(func(_ string, stop func()) {
+		vertices++
+		stop()
+	})
+
+	if vertices != 1 {
+		t.Error("wrong number of vertices")
+	}
+}
+
+func TestEachEdge(t *testing.T) {
+	graph := NewGraph[string]()
+
+	graph.AddEdge("a", "b", 0)
+	graph.AddEdge("b", "c", 0)
+
+	edges := 0
+	graph.EachEdge(func(_ Edge[string], _ func()) {
+		edges++
+	})
+
+	if edges != graph.NEdges()*2 {
+		t.Errorf("wrong number of edges: %d", edges)
+	}
+}
+
+func TestEachEdgeStop(t *testing.T) {
+	graph := NewGraph[string]()
+
+	graph.AddEdge("a", "b", 0)
+	graph.AddEdge("b", "c", 0)
+
+	edges := 0
+	graph.EachEdge(func(_ Edge[string], stop func()) {
+		edges++
+		stop()
+	})
+
+	if edges != 1 {
+		t.Errorf("wrong number of edges: %d", edges)
 	}
 }
 

@@ -47,14 +47,14 @@ func Dijkstra[T Vertex](g *Graph[T], start, end T) *list.List {
 
 	heap.Init(&pq)
 
-	for v := range g.VerticesIter() {
+	g.EachVertex(func(v T, _ func()) {
 		dn := &dijkstraNode[T]{
 			vertex:   v,
 			distance: math.Inf(1),
 		}
 		heap.Push(&pq, dn)
 		nodes[v] = dn
-	}
+	})
 
 	nodes[start].distance = 0
 	heap.Fix(&pq, nodes[start].index)
@@ -62,11 +62,11 @@ func Dijkstra[T Vertex](g *Graph[T], start, end T) *list.List {
 	for pq.Len() > 0 {
 		v := heap.Pop(&pq).(*dijkstraNode[T])
 
-		for he := range g.HalfedgesIter(v.vertex) {
+		g.EachHalfedge(v.vertex, func(he Halfedge[T], _ func()) {
 			dn := nodes[he.End]
 
 			if dn == nil {
-				continue
+				return
 			}
 
 			if v.distance+he.Cost < dn.distance {
@@ -74,7 +74,7 @@ func Dijkstra[T Vertex](g *Graph[T], start, end T) *list.List {
 				dn.predecessor = v
 				heap.Fix(&pq, dn.index)
 			}
-		}
+		})
 
 		if v.vertex == end {
 			l := list.New()

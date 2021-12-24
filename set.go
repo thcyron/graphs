@@ -84,25 +84,13 @@ func (s *Set[T]) Any() T {
 
 // Each executes the given function for each element
 // in the set.
-func (s *Set[T]) Each(f func(T, *bool)) {
-	stop := false
+func (s *Set[T]) Each(f func(T, func())) {
+	stopped := false
+	stop := func() { stopped = true }
 	for v, _ := range *s {
-		f(v, &stop)
-		if stop {
+		f(v, stop)
+		if stopped {
 			return
 		}
 	}
-}
-
-// Iter returns a channel where all elements of the set
-// are sent to.
-func (s *Set[T]) Iter() chan T {
-	ch := make(chan T)
-	go func() {
-		for v, _ := range *s {
-			ch <- v
-		}
-		close(ch)
-	}()
-	return ch
 }

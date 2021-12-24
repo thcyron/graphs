@@ -50,7 +50,7 @@ func Prim[T Vertex](g *Graph[T], start T) *Graph[T] {
 
 	heap.Init(&pq)
 
-	for v := range g.VerticesIter() {
+	g.EachVertex(func(v T, _ func()) {
 		n := &primNode[T]{
 			vertex:  v,
 			cost:    math.Inf(1),
@@ -58,7 +58,7 @@ func Prim[T Vertex](g *Graph[T], start T) *Graph[T] {
 		}
 		heap.Push(&pq, n)
 		nodes[v] = n
-	}
+	})
 
 	nodes[start].cost = 0
 	heap.Fix(&pq, nodes[start].index)
@@ -67,10 +67,10 @@ func Prim[T Vertex](g *Graph[T], start T) *Graph[T] {
 		v := heap.Pop(&pq).(*primNode[T])
 		v.visited = true
 
-		for he := range g.HalfedgesIter(v.vertex) {
+		g.EachHalfedge(v.vertex, func(he Halfedge[T], _ func()) {
 			node := nodes[he.End]
 			if node.visited {
-				continue
+				return
 			}
 
 			if he.Cost < node.cost {
@@ -78,7 +78,7 @@ func Prim[T Vertex](g *Graph[T], start T) *Graph[T] {
 				node.predecessor = v
 				heap.Fix(&pq, node.index)
 			}
-		}
+		})
 	}
 
 	for _, node := range nodes {
